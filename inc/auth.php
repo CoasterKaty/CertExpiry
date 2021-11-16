@@ -1,7 +1,7 @@
 <?php
 /* auth.php Azure AD oAuth Class
  *
- * Katy Nicholson, last updated 17/10/2021
+ * Katy Nicholson, last updated 15/11/2021
  *
  * https://github.com/CoasterKaty
  * https://katytech.blog/
@@ -9,9 +9,12 @@
  *
  */
 
+require_once dirname(__FILE__) . '/base.php';
 require_once dirname(__FILE__) . '/mysql.php';
 
-class modAuth {
+class authException extends Exception { }
+
+class modAuth extends baseClass {
     var $modDB;
     var $Token;
     var $userData;
@@ -27,11 +30,10 @@ class modAuth {
 
         session_start();
         $url = _URL . $_SERVER['REQUEST_URI'];
-
         // check session key against database. If it's expired or doesnt exist then forward to Azure AD
         if (isset($_SESSION['sessionkey'])) {
-            // see if it's still valid
-            $res = $this->modDB->QuerySingle('SELECT * FROM tblAuthSessions WHERE txtSessionKey = \'' . $this->modDB->Escape($_SESSION['sessionkey']) . '\' AND dtExpires > NOW()');
+            // see if it's still valid. Expiry date doesn't mean that we can't just use the refresh token, so don't test this here
+            $res = $this->modDB->QuerySingle('SELECT * FROM tblAuthSessions WHERE txtSessionKey = \'' . $this->modDB->Escape($_SESSION['sessionkey']) . '\'');
             $this->oAuthVerifier = $res['txtCodeVerifier'];
             $this->oAuthChallenge();
             if (!$res || !$res['txtIDToken']) {
@@ -49,7 +51,7 @@ class modAuth {
                 header('Location: ' . _OAUTH_LOGOUT);
                 exit;
             }
-            if (strtotime($res['dtExpires']) < strtotime('+30 minutes')) {
+            if (strtotime($res['dtExpires']) < strtotime('+10 minutes')) {
                 //attempt token refresh
                 if ($res['txtRefreshToken']) {
                     $oauthRequest = 'grant_type=refresh_token&refresh_token=' . $res['txtRefreshToken'] . '&client_id=' . _OAUTH_CLIENTID . '&client_secret=' . urlencode(_OAUTH_SECRET) . '&scope=' . _OAUTH_SCOPE;
@@ -68,11 +70,11 @@ class modAuth {
                             header('Location: ' . $oAuthURL);
                             exit;
                         }
-                    die($reply->error_description);
+                    	throw new authException($reply->error_description);
                     }
-                    $jwt = explode('.', $reply->access_token);
-                    $info = json_decode(base64_decode($jwt[1]), true);
-                    $this->modDB->Update('tblAuthSessions', array('txtToken' => $reply->access_token, 'txtRefreshToken' => $reply->refresh_token, 'txtJWT' => base64_decode($jwt[1]), 'txtRedir' => '', 'dtExpires' => date('Y-m-d H:i:s', strtotime('+' . $reply->expires_in . ' seconds'))), array('intAuthID' => $res['intAuthID']));
+		    $idToken = base64_decode(explode('.', $reply->id_token)[1]);
+		    $this->modDB->Update('tblAuthSessions', array('txtToken' => $reply->access_token, 'txtRefreshToken' => $reply->refresh_token, 'txtIDToken' => $idToken, 'txtRedir' => '', 'dtExpires' => date('Y-m-d H:i:s', strtotime('+' . $reply->expires_in . ' seconds'))), array('intAuthID' => $res['intAuthID']));
+    		    $res['txtToken'] = $reply->access_token;
                 }
             }
             //Populate userData and userName from the JWT stored in the database.
@@ -101,7 +103,9 @@ class modAuth {
 	    }
         }
         //Clean up old entries
-        $this->modDB->Query('DELETE FROM tblAuthSessions WHERE dtExpires < NOW()');
+	// The refresh token is valid for 72 hours by default, but there doesn't seem to be a way to see when the specific one issued expires. So assume anything 72 hours past the expiry of the access token is gone and delete.
+	$maxRefresh = strtotime('-72 hour');
+        $this->modDB->Query('DELETE FROM tblAuthSessions WHERE dtExpires < \'' . date('Y-m-d H:i:s', $maxRefresh) . '\'');
     }
 
     function checkUserRole($role) {
@@ -110,26 +114,6 @@ class modAuth {
 	    return 1;
 	}
 	return;
-    }
-
-    function uuid() {
-        //uuid function is not my code, but unsure who the original author is. KN
-        //uuid version 4
-        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            // 32 bits for "time_low"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
-            // 16 bits for "time_mid"
-            mt_rand( 0, 0xffff ),
-            // 16 bits for "time_hi_and_version",
-            // four most significant bits holds version number 4
-            mt_rand( 0, 0x0fff ) | 0x4000,
-            // 16 bits, 8 bits for "clk_seq_hi_res",
-            // 8 bits for "clk_seq_low",
-            // two most significant bits holds zero and one for variant DCE1.1
-            mt_rand( 0, 0x3fff ) | 0x8000,
-            // 48 bits for "node"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
-        );
     }
 
     function oAuthChallenge() {

@@ -6,10 +6,10 @@
  * https://github.com/CoasterKaty
  * https://katytech.blog/
  * https://twitter.com/coaster_katy
- 
- **** RENAME THIS FILE TO config.inc ****
- 
  *
+ 
+ ***RENAME TO config.inc ****
+ 
  */
 
 // MySQL connection details
@@ -27,10 +27,18 @@ define('_MYSQL_PASS', 'DATABASE_PASSWORD');
 
 //define('_OAUTH_SERVER', 'https://login.microsoftonline.com/common/oauth2/v2.0/');
 define('_OAUTH_SERVER', 'https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/');
+define('_OAUTH_TENANTID', 'TENANT_ID');
 define('_OAUTH_CLIENTID', 'CLIENT_ID');
 define('_OAUTH_LOGOUT', 'https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0');
-define('_OAUTH_SECRET', 'CLIENT_SECRET');
 define('_OAUTH_SCOPE', 'openid%20offline_access%20profile%20user.read');
+
+
+// Define either the client secret, or the client certificate details
+define('_OAUTH_SECRET', 'CLIENT_SECRET');
+
+define('_OAUTH_AUTH_CERTFILE', '/path/to/cert.crt');
+define('_OAUTH_AUTH_KEYFILE', '/path/to/privatekey.pem');
+
 
 
 

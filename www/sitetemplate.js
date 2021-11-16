@@ -1,12 +1,34 @@
+function getPos(el) {
+	return el.offsetLeft + (el.offsetParent && getPos(el.offsetParent));
+}
+function positionTableMenu(menuID) {
+	var elMenu = document.getElementById(menuID);
+
+	elMenu.style.display = 'none';
+	var posRight = getPos(elMenu.parentNode) + 200;
+	console.log(posRight);
+	if (posRight > window.innerWidth) {
+		elMenu.style.left = 'unset';
+		elMenu.style.right = '100%';
+	} else {
+		elMenu.style.right = 'unset';
+		elMenu.style.left = '100%';
+	}
+	elMenu.style.display = 'block';
+
+}
 function openFlyout(url, title) {
-	if (document.getElementById('flyout').style.display != 'block') {
+	if (warnUnsavedFlyout()) {
+		clearUnsavedFlyout();
+	}
+	if (document.getElementById('flyout').getAttribute('unsaved') != '1') {
+		document.getElementById('flyoutFrame').innerHTML = '';
 		sendRequestDisplayResult(url, 'flyoutFrame');
 		document.getElementById('flyoutFrame').classList.add('loading');
 		document.getElementById('flyout').setAttribute('unsaved', '0');
 		document.getElementById('flyoutTitle').innerHTML = title;
 		document.getElementById('flyout').style.display = 'block';
 		document.getElementById('flyout').focus();
-
 	}
 }
 function setUnsavedFlyout() {
@@ -16,8 +38,7 @@ function clearUnsavedFlyout() {
 	document.getElementById('flyout').setAttribute('unsaved', '0');
 }
 function closeFlyout() {
-	var ret = warnUnsavedFlyout();
-	if (ret) {
+	if (warnUnsavedFlyout()) {
 		document.getElementById('flyoutFrame').innerHTML = '';
 		document.getElementById('flyout').style.display = 'none';
 		document.getElementById('flyout').setAttribute('unsaved', '0');
@@ -26,23 +47,11 @@ function closeFlyout() {
 function warnUnsavedFlyout() {
 	var unsaved = document.getElementById('flyout').getAttribute('unsaved');
 	if (unsaved == '1') {
-		var c = confirm('Flyout Closing - unsaved data alert here');
+		var c = confirm('Any unsaved changes will be lost');
 		return c;
 	}
 	return true;
 }
-
-// only set this on the main window, don't set this within the iframe
-
-	window.addEventListener('beforeunload', function(e) {
-		if (document.getElementById('flyout').getAttribute('unsaved') == '1') {
-			e.preventDefault();
-			(e || window.event).returnValue = 'Unsaved Warning';
-			return 'Unsaved Warning';
-		}
-	});
-
-
 
 function sendRequestDisplayResult(sURL, elID) {
 	// send to sURL, put result in elID
@@ -120,13 +129,21 @@ function dropdownSelected(dropdownID, itemID) {
 
 //When the top section of the dropdown field is clicked
 function dropdownClose(dropdownID) {
-//don't know how to do this.
-// :focus-within CSS runs before this does, so it always shows as "currently open".
-// what we want is for the <ul> to be hidden if it's already showing, but do nothing if it isn't already showing.
-console.log(dropdownID);
+	//don't know how to do this.
+	// :focus-within CSS runs before this does, so it always shows as "currently open".
+	// what we want is for the <ul> to be hidden if it's already showing, but do nothing if it isn't already showing.
+	console.log(dropdownID);
 	console.log(window.getComputedStyle(document.getElementById('u' + dropdownID), null).display);
 	if (document.getElementById('u' + dropdownID).style.display == 'block') {
 		document.getElementById('flyout').focus();
 	}
 }
+
+window.addEventListener('beforeunload', function(e) {
+	if (document.getElementById('flyout').getAttribute('unsaved') == '1') {
+		e.preventDefault();
+		(e || window.event).returnValue = 'Unsaved Warning';
+		return 'Unsaved Warning';
+	}
+});
 

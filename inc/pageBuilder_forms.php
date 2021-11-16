@@ -13,7 +13,8 @@ https://katystech.blog/
 		List: Allow unselect of item in single select list
 		Form validation - highlight missed/incorrect fields in red
 		Form validation - don't enable button until validation passes (different style for disabled buttons)
-- Table:	ISSUE: paging doesn't work if we use the pageTable class's sort routine, as we are sorting only the data on screen
+		Toggle: Allow names for the options, then show the toggle as about 300px wide with the text 
+		(     This is off       * This is on *    )
 
 */
 

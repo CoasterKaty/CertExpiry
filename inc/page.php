@@ -8,7 +8,9 @@ require_once dirname(__FILE__) . '/auth.php';
 require_once dirname(__FILE__) . '/graph.php';
 require_once dirname(__FILE__) . '/pageBuilder_tables.php';
 require_once dirname(__FILE__) . '/pageBuilder_forms.php';
+require_once dirname(__FILE__) . '/exception.php';
 define('_NL', "\r\n");
+
 
 class sitePage {
 	var $page;
@@ -26,10 +28,16 @@ class sitePage {
 	function __construct($title = '', $script = '', $allowAnonymous = '0') {
 		$this->title = $title;
 		$this->script = $script;
-		$this->modAuth = new modAuth($allowAnonymous);
+		try {
+			$this->modAuth = new modAuth($allowAnonymous);
+		} catch (Exception $e) {
+			throw new siteException(errorPage($e->getMessage()));
+		}
+
 
 		if (!$allowAnonymous || $this->modAuth->isLoggedIn) $this->modGraph = new modGraph();
 	}
+
 
 	function addNavigation($navItem) {
 		$this->mainNavigation[] = $navItem;
@@ -59,7 +67,14 @@ class sitePage {
 		$nav['sub'] = '<div id="navSub" class="nav">' . _NL;
 		foreach ($this->mainNavigation as $navItem) {
 			if ($navItem->type == 'main' || $navItem->type == 'sub') {
-				$nav[$navItem->type] .= '<div ' . ($navItem->selected ? 'class="selected"' : '') . 'tabindex="-1" id="' . $navItem->id . '" style="float: ' . $navItem->position . '"' . ($navItem->flyoutAction ? ' onclick="JavaScript:openFlyout(\'' . $navItem->flyoutAction . '\', \'' . $navItem->flyoutTitle . '\');"' : '') . ($navItem->link ? ' onclick="JavaScript:location.href=\'' . $navItem->link . '\';"' : '') . '><span>' . ($navItem->link ? '<a href="' . $navItem->link . '">' . $navItem->name . '</a>' : $navItem->name) . '</span>';
+				$nav[$navItem->type] .= '<div style="float: ' . $navItem->position . ';' . 
+					($navItem->icon ? ' background-image: url(\'/images/' . $navItem->icon . '\'); ' : '') . 
+					($navItem->width ? ' width: ' . $navItem->width . 'px;" ' : '" ') . 
+					($navItem->tooltip ? 'title="' . htmlentities($navItem->tooltip) . '" ' : '') .  
+					($navItem->selected ? 'class="selected"' : '') . 
+					'tabindex="-1" id="' . $navItem->id . '" ' . 
+					($navItem->flyoutAction ? ' onclick="JavaScript:openFlyout(\'' . $navItem->flyoutAction . '\', \'' . $navItem->flyoutTitle . '\');"' : '') . 
+					($navItem->link ? ' onclick="JavaScript:' . ($navItem->newWindow ? 'window.open(' : 'location.href=') . '\'' . $navItem->link . '\'' . ($navItem->newWindow ? ')' : '') . ';"' : '') . '><span>' .  $navItem->name  . '</span>';
 				if ($navItem->subMenu) {
 					$nav[$navItem->type] .= $this->printNavigationItem($navItem);
 				}
@@ -74,7 +89,9 @@ class sitePage {
 	function printNavigationItem($navItem, $level = 1) {
 		$output .= '<ul class="' . ($level == 1 ? 'odd' : 'even') . '">' . _NL;
 		foreach ($navItem->subMenu as $subItem) {
-			$output .= '<li ' . ($subItem->subMenu ? ' tabindex="-2" class="hasSubMenu"' : '') . ' id="' . $subItem->id . '"' . ($subItem->flyoutAction ? ' onclick="JavaScript:openFlyout(\'' . $subItem->flyoutAction . '\', \'' . $subItem->flyoutTitle . '\');"' : '')  . '>' . ($subItem->link ? '<a href="' . $subItem->link . '">' . $subItem->name . '</a>' : $subItem->name);
+			$output .= '<li ' . ($subItem->subMenu ? ' tabindex="-2" class="hasSubMenu"' : '') . ' id="' . $subItem->id . '"' . 
+				($subItem->flyoutAction ? ' onclick="JavaScript:openFlyout(\'' . $subItem->flyoutAction . '\', \'' . $subItem->flyoutTitle . '\');"' : '')  . '>' . 
+				($subItem->link ? '<a href="' . $subItem->link . '">' . $subItem->name . '</a>' : $subItem->name);
 			if ($subItem->subMenu) {
 				$output .= $this->printNavigationItem($subItem, ($level == 1 ? 2 : 1));
 			}
@@ -190,6 +207,9 @@ class navigationItem {
 	public $link = '';		//URL to open on click, in main window
 	public $selected = 0;		//0: not selected, 1: item is selected. Applies to top level menu item only
 	public $icon = '';		//image link for side nav item
+	public $tooltip;		//tooltiptext
+	public $newWindow;		// open link in new window
+	public $width;			//use with icon to set fixed width
 
 	function __construct($name, $type='main', $position='left') {
 		$this->name = $name;

@@ -79,7 +79,6 @@ class modDB {
             $intCount++;
         }
         $query .= ')';
-
         $myQry = mysqli_query($this->myDB, $query);
         return mysqli_insert_id($this->myDB);
 

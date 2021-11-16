@@ -82,7 +82,11 @@ class pageTable {
 	}
 
 	function rowCount() {
-		return count($this->rows);
+		try {
+			return count($this->rows);
+		} catch (Exception $e) {
+			return 0;
+		}
 	}
 
 	function getColumn($colName) {
@@ -105,9 +109,9 @@ class pageTable {
 		if (!$this->skipHeaderRow) {
 			$output .= '<div class="head">' . _NL . '<div class="row">' . _NL;
 			foreach ($this->columns as $column) {
-				if (!$column->hidden) $output .= '<div class="cell' . ($this->hasIcons ? ' cellicon' : '') . '" ' . ($column->width ? ' style="width: ' . $column->width . 'px; max-width: ' . $column->width . 'px;"' : '') . '>' . $column->text . '</div>' . _NL;
+				if (!$column->hidden) $output .= '<div class="cell' . ($this->hasIcons ? ' cellicon' : '') . (!$column->resize ? ' noresize' : '') . '" ' . ($column->width ? ' style="width: ' . $column->width . 'px;"' : '') . '>' . $column->text . '</div>' . _NL;
 			}
-			if ($hasMenu) $output .= '<div class="cell"></div>';
+			if ($hasMenu) $output .= '<div class="cell noresize"></div>';
 			$output .= '</div>' . _NL . '</div>' . _NL;
 		}
 		$output .= '<div class="body">' . _NL;
@@ -117,11 +121,18 @@ class pageTable {
 			foreach ($row->column as $column => $data) {
 				$thisColumn = $this->getColumn($column);
 				if (!$thisColumn->hidden) {
-					$rowOutput[$row->id] .= '<div ' . ($data->flyoutAction ? 'onclick="JavaScript: openFlyout(\'' . $data->flyoutAction . '\', \'' . str_replace('\'', '\\\'', $data->flyoutTitle) . '\');" ' : '') . 'title="' . $data->tooltip . '" class="cell' . ($this->hasIcons ? ' cellicon' : '') . ($data->flyoutAction ? ' link' : '') . '" '. ($thisColumn->width ? ' style="max-width: ' . $thisColumn->width . 'px;"' : '') . '>' . ($data->link ? '<a href="' . $data->link . '" target="_blank">' . $data->text . '</a>' : $data->text) .  '</div>' . _NL;
+					// setting max-width on the cell allows it to resize to smaller than "fitting the content".
+					$rowOutput[$row->id] .= '<div ' . 
+					($data->flyoutAction ? 'onclick="JavaScript: openFlyout(\'' . $data->flyoutAction . '\', \'' . str_replace('\'', '\\\'', $data->flyoutTitle) . '\');" ' : '') . 'title="' . $data->tooltip . '" class="cell' . ($this->hasIcons ? ' cellicon' : '') . 
+					($data->flyoutAction ? ' link' : '') . '" ' . 
+					($thisColumn->width && !$thisColumn->resize ? ' style="max-width: ' . $thisColumn->width  . 'px;"' : '') .
+					((($thisColumn->width && $thisColumn->resize) || (!$thisColumn->width && $thisColumn->resize)) ? ' style="max-width: 100px;"' : '') . '>' .
+					($data->link ? '<a href="' . $data->link . '" target="_blank">' . $data->text . '</a>' : $data->text) .  '</div>' . _NL;
 				}
 			}
 			if ($row->menu) {
-				$rowOutput[$row->id] .= '<div class="menu" tabindex="-5">' . $row->menu->output($row, $preloadImages) . '</div>';
+				$instanceID = uniqid();
+				$rowOutput[$row->id] .= '<div class="menu" tabindex="-5" onclick="JavaScript:positionTableMenu(\'' . $instanceID . '\');">' . $row->menu->output($row, $instanceID, $preloadImages) . '</div>';
 			}
 			if (!$row->menu && $hasMenu) {
 				// If there is a menu in this table, but not this row, add a cell so the table lines up
@@ -181,6 +192,7 @@ class pageTableColumn {
 	public $text;
 	public $width;
 	public $hidden;
+	public $resize = 1;
 	function __construct($name, $width = '') {
 		$this->name = $name;
 		$this->text = $name;
@@ -190,12 +202,13 @@ class pageTableColumn {
 
 class pageTableMenu {
 	public $items;
+
 	function addItem($newItem) {
 		$this->items[] = $newItem;
 		return $newItem;
 	}
-	function output($tableRow, &$preloadImages) {
-		$output = '<ul>';
+	function output($tableRow, $instanceID, &$preloadImages) {
+		$output = '<ul id="' . $instanceID . '">';
 		foreach ($this->items as $item) {
 			if ($item->flyoutTitle) {
 				$flyoutTitle = str_replace('$NAME', $tableRow->name, $item->flyoutTitle);

@@ -6,6 +6,8 @@ html {
 	--BackgroundBlack: #000000;
 	--BackgroundBlue: #243a5e;
 
+	--LoadingGrey: #e6e6e6;
+	--LoadingBlue: #3f67a6;
 
 	--InputBlue: #3f67a6;
 	--InputBorder: #bdc1c1;
@@ -47,7 +49,7 @@ a {
 	color: var(--LinkBlue);
 }
 
-div#ajaxError {
+div#ajaxError, div#fatalError {
 	display: none;
 	position: absolute;
 	width: 100vw;
@@ -56,9 +58,13 @@ div#ajaxError {
 	background-color: var(--FadedBackground);
 
 }
-div#ajaxErrorInner {
+div#fatalError {
+	display: block;
+}
+div#ajaxErrorInner, div#fatalErrorInner {
 	width: 500px;
-	height: 100px;
+	min-height: 100px;
+	padding: 25px;
 	border: 1px solid var(--InfoTipErrorBorder);
 	background-color: var(--InfoTipErrorBackground);
 	text-align: center;
@@ -67,13 +73,14 @@ div#ajaxErrorInner {
 	left: calc(50% - 250px);
 	top: calc(50% - 50px);
 }
-div#ajaxError span {
+div#ajaxError span, div#fatalError span {
 	font-weight: bold;
 	font-size: 24px;
 	display: block;
 	padding-bottom: 20px;
 	padding-top: 5px;
 }
+
 
 /* Flyout */
 
@@ -101,10 +108,34 @@ div#flyout > div#flyoutFrame {
 	overflow-y: auto;
 }
 div#flyout > div#flyoutFrame.loading {
-	background-image: url('/images/LoadingLarge.gif');
-	background-position: center;
-	background-repeat: no-repeat;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 120px;
+	height: 120px;
+	margin: -76px 0 0 -76px;
+	border: 16px solid var(--LoadingGrey);
+	border-radius: 50%;
+	border-top: 16px solid var(--LoadingBlue);
+	-webkit-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
 }
+
+@-webkit-keyframes spin {
+	0% { -webkit-transform: rotate(0deg); }
+	100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+
+
+
+
+
 div#flyout div#flyoutClose {
 	position: absolute;
 	right: 6px;
@@ -317,12 +348,16 @@ div.dropdown li:hover {
 
 .nav * {
 	outline: none;
+	transition: all 0.25s;
+
 }
 .nav > div {
 	display: inline-block;
 	position: relative;
 	padding: 0px 10px;
 	margin: 0px;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 #navMain > div.title {
 	background-repeat: no-repeat;
@@ -334,6 +369,7 @@ div.dropdown li:hover {
 #navMain > div {
 	padding-top: 3px;
 	padding-bottom: 3px;
+	background-size: 36px;
 }
 #navMain > div.title:hover {
 	background-color: var(--BackgroundBlack);
@@ -565,6 +601,10 @@ div.table div.body {
 }
 div.table div.head div.cell {
 	font-weight: bold;
+	resize: horizontal;
+}
+div.table div.head div.cell.noresize {
+	resize: none;
 }
 div.table div.row {
 	display: table-row;
@@ -600,6 +640,8 @@ div.table div.row > div.cellicon:first-of-type {
 div.table div.row div.menu {
 	display: table-cell;
 	width: 30px;
+	min-width: 30px;
+	max-width: 30px;
 	position: relative;
 	background-image: url('/images/Menu.png');
 	background-repeat: no-repeat;
@@ -612,8 +654,8 @@ div.table div.row div.menu {
 div.table div.row div.menu:hover, div.table div.row div.menu:focus-within {
 	background-image: url('/images/MenuHot.png');
 }
-div.table div.row div.menu:focus-within > ul {
-	display: block;
+div.table div.row div.menu:not(:focus-within) > ul {
+	display: none !important;
 }
 div.table div.row div.menu ul {
 	display: none;
@@ -626,7 +668,7 @@ div.table div.row div.menu ul {
 	padding: 0px;
 	margin: 0px;
 	min-width: 150px;
-	right: 30px;
+	right: 0px;
 }
 div.table div.row div.menu ul li {
 	padding: 8px;

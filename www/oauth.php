@@ -9,6 +9,30 @@
  *
  */
 require_once '../inc/mysql.php';
+function base64UrlEncode($toEncode) {
+                return str_replace('=', '', strtr(base64_encode($toEncode), '+/', '-_'));
+        }
+
+
+        function uuid() {
+                //uuid function is not my code, but unsure who the original author is. KN
+                //uuid version 4
+                return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                    // 32 bits for "time_low"
+                    mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+                    // 16 bits for "time_mid"
+                    mt_rand( 0, 0xffff ),
+                    // 16 bits for "time_hi_and_version",
+                    // four most significant bits holds version number 4
+                    mt_rand( 0, 0x0fff ) | 0x4000,
+                    // 16 bits, 8 bits for "clk_seq_hi_res",
+                    // 8 bits for "clk_seq_low",
+                    // two most significant bits holds zero and one for variant DCE1.1
+                    mt_rand( 0, 0x3fff ) | 0x8000,
+                    // 48 bits for "node"
+                    mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+                );
+        }
 
 session_start();
 $modDB = new modDB();
@@ -21,7 +45,34 @@ $sessionData = $modDB->QuerySingle('SELECT * FROM tblAuthSessions WHERE txtSessi
 
 if ($sessionData) {
     // Request token from Azure AD
-    $oauthRequest = 'grant_type=authorization_code&client_id=' . _OAUTH_CLIENTID . '&redirect_uri=' . urlencode(_URL . '/oauth.php') . '&code=' . $_GET['code'] . '&client_secret=' . urlencode(_OAUTH_SECRET) . '&code_verifier=' . $sessionData['txtCodeVerifier'];
+        if (_OAUTH_AUTH_CERTFILE) {
+                        // Use the certificate specified
+                        //https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-certificate-credentials
+                        $cert = file_get_contents(_OAUTH_AUTH_CERTFILE);
+                        $certKey = openssl_pkey_get_private(file_get_contents(_OAUTH_AUTH_KEYFILE));
+                        $certHash = openssl_x509_fingerprint($cert);
+                        $certHash = base64_encode(hex2bin($certHash));
+                        $caHeader = json_encode(array('alg' => 'RS256', 'typ' => 'JWT', 'x5t' => $certHash));
+                        $caPayload = json_encode(array('aud' => 'https://login.microsoftonline.com/' . _OAUTH_TENANTID . '/v2.0',
+                                                'exp' => date('U', strtotime('+10 minute')),
+                                                'iss' => _OAUTH_CLIENTID,
+                                                'jti' => uuid(),
+                                                'nbf' => date('U'),
+                                                'sub' => _OAUTH_CLIENTID));
+                        $caSignature = '';
+
+                        $caData = base64UrlEncode($caHeader) . '.' . base64UrlEncode($caPayload);
+                        openssl_sign($caData, $caSignature, $certKey, OPENSSL_ALGO_SHA256);
+                        $caSignature = base64UrlEncode($caSignature);
+                        $clientAssertion = $caData . '.' . $caSignature;
+			$oauthRequest = 'grant_type=authorization_code&client_id=' . _OAUTH_CLIENTID . '&redirect_uri=' . urlencode(_URL . '/oauth.php') . '&code=' . $_GET['code'] . '&code_verifier=' . $sessionData['txtCodeVerifier'] . '&client_assertion=' . $clientAssertion . '&client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
+
+                } else {
+		        $oauthRequest = 'grant_type=authorization_code&client_id=' . _OAUTH_CLIENTID . '&redirect_uri=' . urlencode(_URL . '/oauth.php') . '&code=' . $_GET['code'] . '&client_secret=' . urlencode(_OAUTH_SECRET) . '&code_verifier=' . $sessionData['txtCodeVerifier'];
+                }
+
+
+
     $ch = curl_init(_OAUTH_SERVER . 'token');
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $oauthRequest);
