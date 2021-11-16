@@ -1,0 +1,696 @@
+html {
+	--BorderGrey: #e6e6e6;
+	--BackgroundWhite: #ffffff;
+	--TextWhite: #ffffff;
+	--TextBlack: #000000;
+	--BackgroundBlack: #000000;
+	--BackgroundBlue: #243a5e;
+
+
+	--InputBlue: #3f67a6;
+	--InputBorder: #bdc1c1;
+	--InputToggleOff: #8c8c8c;
+	--InputToggleOffBackground: #ffffff;
+	--InputToggleOn:#3f67a6;
+	--InputToggleOnBackground: #c8d5ea;
+	--ButtonNoFocus: #6b8ec7;
+
+	--TableHighlight: #e8e8e8;
+	--FormPlaceholder: #656567;
+	--Required: #ff0000;
+	--BorderDarkGrey: #a6a6a6;
+	--LinkBlue: #3f67a6;
+	--TableRowBorder: #bdc1c1;
+	--InfoTipInfoBorder: #0066ff;
+	--InfoTipInfoBackground: #99c2ff;
+	--InfoTipWarningBorder: #ffd500;
+	--InfoTipWarningBackground: #ffee99;
+	--InfoTipErrorBorder: #cc3300;
+	--InfoTipErrorBackground: #ffb399;
+
+	--FadedBackground: rgba(0,0,0,0.3);
+	--ElementHighlight: #e8e8e8;
+}
+
+* {
+	font-family: "Segoe UI", Calibri, sans-serif;
+}
+html, body {
+	margin: 0px;
+	padding: 0px;
+	font-size: 13px;
+	max-height: 100vh;
+	height: 100vh;
+}
+
+a {
+	color: var(--LinkBlue);
+}
+
+div#ajaxError {
+	display: none;
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	z-index: 400;
+	background-color: var(--FadedBackground);
+
+}
+div#ajaxErrorInner {
+	width: 500px;
+	height: 100px;
+	border: 1px solid var(--InfoTipErrorBorder);
+	background-color: var(--InfoTipErrorBackground);
+	text-align: center;
+	position: absolute;
+	z-index: 500;
+	left: calc(50% - 250px);
+	top: calc(50% - 50px);
+}
+div#ajaxError span {
+	font-weight: bold;
+	font-size: 24px;
+	display: block;
+	padding-bottom: 20px;
+	padding-top: 5px;
+}
+
+/* Flyout */
+
+div#flyout {
+	display: none;
+	position: absolute;
+	z-index: 200;
+	right: 0px;
+	height: 100vh;
+	width: 500px;
+	border-left: 1px solid var(--BorderGrey);
+	overflow: hidden;
+	top: 0px;
+	background-color: var(--BackgroundWhite);
+	box-shadow: 0 6.4px 14.4px 0 rgba(0,0,0,.132),0 1.2px 3.6px 0 rgba(0,0,0,.108);
+
+}
+
+div#flyout > div#flyoutFrame {
+	position: absolute;
+	width: calc(100% - 10px);
+	height: calc(100% - 40px);
+	top: 40px;
+	left: 10px;
+	overflow-y: auto;
+}
+div#flyout > div#flyoutFrame.loading {
+	background-image: url('/images/LoadingLarge.gif');
+	background-position: center;
+	background-repeat: no-repeat;
+}
+div#flyout div#flyoutClose {
+	position: absolute;
+	right: 6px;
+	top: 6px;
+	width: 18px;
+	height: 18px;
+	cursor: pointer;
+	background-image: url('/images/Close.png');
+	background-repeat: no-repeat;
+	background-size: 18px;
+	background-position: center;
+	padding: 8px;
+	transition: all 0.25s;
+}
+div#flyout div#flyoutTitle {
+	color: #385b94;
+	font-size: 24px;
+	font-weight: bold;
+	padding: 4px 8px;
+	max-width: 450px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+div#flyout div#flyoutClose:hover {
+	background-color: var(--ElementHighlight);
+}
+
+
+/* Forms */
+
+form {
+	padding-bottom: 20px;
+}
+form div.table {
+	width: calc(100% - 17px);
+	border: 1px solid var(--InputBorder);
+	border-bottom: none;
+}
+form div.table div.row * {
+	cursor: pointer;
+}
+
+form div.table div.head div.row * {
+	cursor: initial;
+}
+form label {
+	width: 100%;
+	display: block;
+	padding-top: 7px;
+	padding-bottom: 2px;
+}
+form span.required {
+	color: var(--Required);
+	margin-right: 3px;
+	font-weight: bold;
+}
+form span.help {
+	display: inline-block;
+	background-image: url('/images/FormFieldHelp.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 15px;
+	height: 15px;
+	width: 15px;
+	margin-left: 3px;
+}
+	
+textarea {
+	resize: vertical;
+}
+textarea, input {
+	outline: none;
+	border: 1px solid var(--InputBorder);
+	box-sizing: border-box;
+}
+input.mandatory {
+	border: 1px solid #ff0000;
+}
+input:focus, textarea:focus {
+	border: 1px solid var(--InputBlue);
+}
+input[type="text"], input[type="number"], textarea {
+	width: calc(100% - 15px);
+	padding-top: 2px;
+}
+input[type="button"], input[type="submit"] {
+	background-color: var(--ButtonNoFocus);
+	color: var(--TextWhite);
+	padding: 5px 20px;
+	margin-top: 10px;
+	cursor: pointer;
+	transition: all 0.25s;
+}
+input[type="button"]:hover, input[type="submit"]:hover {
+	background-color: var(--InputBlue);
+}
+.hidden {
+	display: none;
+}
+label.list {
+	padding: 5px;
+	margin: -5px;
+}
+input:checked + label.list {
+	background-color: var(--TableHighlight);
+}
+
+label.toggle {
+	padding: 5px;
+	border: 1px solid var(--InputBorder);
+	border-radius: 15px;
+	background-color: var(--InputToggleOffBackground);
+	cursor: pointer; 
+	position: relative;
+	height: 10px;
+	width: 36px;
+	margin-top: 5px;
+}
+
+label.toggle span.toggle {
+	position: absolute;
+	top: 2px;
+	left: 4px;
+	display: block;
+	width: 16px;
+	height: 16px;
+	border-radius: 9px;
+	background-color: var(--InputToggleOff);
+	transition: all 0.25s;
+}
+input[type="checkbox"].toggle:checked + label.toggle > span {
+	left: 27px;
+	background-color: var(--InputToggleOn);
+}
+input[type="checkbox"].toggle:checked + label.toggle {
+	background-color: var(--InputToggleOnBackground);
+}
+
+div.dropdown {
+	outline: none;
+	width: calc(100% - 17px);
+	border: 1px solid #bdc1c1;
+	position: relative;
+	height: 20px;
+	cursor: pointer;
+	background-image: url('/images/dropdownExpand.png?1');
+	background-repeat: no-repeat;
+	background-position-x: right;
+	transition: all 0.25s;
+
+}
+div.dropdown:focus-within {
+	background-image: url('/images/dropdownCollapse.png?1');
+	border: 1px solid #385b94;
+}
+
+div.dropdown > span {
+	padding-left: 2px;
+}
+div.dropdown > span.placeholder {
+	color: var(--FormPlaceholder);
+}
+
+div.dropdown:focus-within ul {
+	display: block;
+}
+div.dropdown ul {
+	display: none;
+	z-index: 300;
+	position: absolute;
+	background-color: var(--BackgroundWhite);
+	box-shadow: 0 6.4px 14.4px 0 rgba(0,0,0,.132),0 1.2px 3.6px 0 rgba(0,0,0,.108);
+	border: 1px solid var(--BorderGrey);
+	list-style-type: none;
+	margin: -1px;
+	top: 21px;
+	padding-left: 0px;
+	width: 100%;
+}
+div.dropdown * {
+	cursor: pointer;
+}
+div.dropdown li {
+
+	display: block;
+	padding: 2px;
+}
+div.dropdown li:hover {
+	background-color: var(--TableHighlight);
+}
+
+/* Navigation Menus */
+#navMain {
+	background-color: var(--BackgroundBlack);
+	color: var(--TextWhite);
+	margin: 0px;
+	padding: 0px;
+	font-size: 28px;
+}
+
+#navMain > div {
+	height: 44px;
+	cursor: pointer;
+}
+#navSub > div {
+	height: 36px;
+	cursor: pointer;
+}
+
+.nav * {
+	outline: none;
+}
+.nav > div {
+	display: inline-block;
+	position: relative;
+	padding: 0px 10px;
+	margin: 0px;
+}
+#navMain > div.title {
+	background-repeat: no-repeat;
+	background-size: auto calc(100% - 6px);
+	background-position: 3px 3px;
+	max-height: 44px;
+	cursor: initial;	
+}
+#navMain > div {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+#navMain > div.title:hover {
+	background-color: var(--BackgroundBlack);
+}
+#navMain > div:hover, #navMain > div:focus-within, #navMain > div.selected {
+	background-color: #333333;
+}
+#navSub > div:hover, #navSub > div:focus-within, #navSub > div.selected {
+	background-color: #36577c;
+}
+.nav > div:focus-within >  ul {
+	display: block;
+}
+.nav * ul > li.hasSubMenu {
+	background-image: url('/images/SubMenuIcon.png');
+	background-repeat: no-repeat;
+	background-position: right;
+}
+.nav > div:focus-within > ul li:focus-within > ul {
+	display: block;
+}
+
+
+.nav > div > ul  {
+	position: absolute;
+	left: 0px;
+}
+.nav ul {
+	display: none;
+	font-size: 14px;
+	padding: 0px;
+	width: fit-content;
+	z-index: 100;
+	list-style-type: none;
+	margin: 0px;
+	font-weight: 100;
+	background-color: #525252;
+	cursor: initial;
+
+}
+.nav li.hasSubMenu {
+	position: relative;
+	cursor: pointer;
+}
+.nav li.hasSubMenu > ul {
+	position: absolute;
+	top: 0px;
+	left: 100%;
+}
+.nav > img.logo {
+	max-height: 44px;
+}
+.nav * ul.odd {
+	background-color: #525252;
+}
+.nav * ul.even {
+	background-color: #727272;
+}
+.nav * ul > li > ul {
+	left: 150px;
+	top: 0px;
+}
+
+
+#navSub > div > span {
+	margin: 5px 0px;
+	display: block;
+}
+#navSub > div > span > a {
+	text-decoration: inherit;
+	color: inherit;
+}
+
+#navMain * ul {
+	top: 100%;
+}
+#navSub > div > ul {
+	top: 100% !important;
+}
+#navSub * ul {
+	top: 0px;
+}
+.nav * ul > li {
+	padding: 5px;
+	margin: 0px;
+	min-width: 150px;
+}
+
+#navMain * ul > li:hover {
+	background-color: #727272;
+}
+.nav * ul > li > a {
+	display: block;
+	text-decoration: none;
+	color: var(--TextWhite);
+}
+#navMain > div.login {
+	float: right;
+}
+#navMain > div.login > div {
+	font-size: 14px;
+	height: 44px;
+	vertical-align: top;
+	display: inline-block;
+}
+#navMain > div.login > div > span {
+	display: block;
+}
+#navMain > div.login > div > span.loggedout {
+	padding-top: 10px;
+}
+#navMain > div.login > div > span.light {
+	font-weight: 100;
+}
+#navMain > div.login > span.userPhoto {
+	width: 44px;
+	height: 44px;
+	overflow: hidden;
+	border-radius: 50%;
+	margin-left: 15px;
+	display: inline-block;
+	background-color: #9933ff;
+	text-align: center;
+	font-size: 22px;
+}
+#navMain > div.login > span.notLoggedIn {
+	background-color: #a2a2a2;
+}
+#navMain > div.login > span.userPhoto > span {
+	padding-top: 5px;
+	display: block;
+}
+#navMain > div.login > span.userPhoto > img {
+	width: 44px;
+	height: 44px;
+}
+#navSub {
+	margin: 0px;
+	padding: 0px;
+	font-size: 14px;
+	background-color: var(--BackgroundBlue);
+	color: var(--TextWhite);
+	height: 36px;
+}
+
+
+
+#mainContainer {
+	height: calc(100% - 90px);
+	position: relative;
+}
+#navSide {
+	width: 250px;
+	max-width: 250px;
+	float: left;
+}
+
+div#mainBody, #navSide {
+	height: 100%;
+	overflow-x: auto;
+	display: inline-block;
+}
+
+div#mainBody {
+	max-width: 100vw;
+	position: absolute;
+	top: 0px;
+	width: 100%;
+
+}
+div#navSide + div#mainBody {
+	max-width: calc(100vw - 250px);
+}
+
+#navSide > div.navSideGroup {
+	font-weight: bold;
+	margin: 10px;
+}
+
+#navSide > div.navSideGroup > span {
+	padding-left: 0px;
+	padding-bottom: 5px;
+	border-bottom: 1px solid var(--TableRowBorder);
+	display: block;
+}
+#navSide ul {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+#navSide ul li {
+	font-weight: normal;
+	padding: 8px 28px;
+	padding-right: 0px;
+	margin: 0px;
+	background-repeat: no-repeat;
+	background-size: 20px;
+	background-position: left center;
+	cursor: pointer;
+}
+#navSide ul li:hover, #navSide ul li.selected {
+	background-color: var(--TableHighlight);
+}
+
+#navSide ul li a {
+	display: block;
+	text-decoration: none;
+	color: var(--TextBlack);
+}
+
+
+/* Table */
+
+img.delete {
+	cursor: pointer;
+}
+
+
+div.table {
+	display: table;
+	font-size: 13px;
+}
+div.table div.head {
+	display: table-header-group;
+}
+div.table div.body {
+	display: table-row-group;
+}
+div.table div.head div.cell {
+	font-weight: bold;
+}
+div.table div.row {
+	display: table-row;
+	background-repeat: no-repeat;
+	background-size: 20px;
+	background-position: left center;
+
+}
+div.table div.cell {
+	border-bottom: 1px solid var(--TableRowBorder);
+	padding: 5px;
+	display: table-cell;
+	overflow: hidden;
+	max-height: 30px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+div.table div.body div.row:hover {
+	background-color: var(--TableHighlight);
+}
+
+div.table div.row div.cell.link {
+	cursor: pointer;
+	color: var(--LinkBlue);
+	text-decoration: underline;
+
+}
+
+div.table div.row > div.cellicon:first-of-type {
+	padding-left: 25px;
+}
+
+div.table div.row div.menu {
+	display: table-cell;
+	width: 30px;
+	position: relative;
+	background-image: url('/images/Menu.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 20px;
+	cursor: pointer;
+	border-bottom: 1px solid var(--TableRowBorder);
+	
+}
+div.table div.row div.menu:hover, div.table div.row div.menu:focus-within {
+	background-image: url('/images/MenuHot.png');
+}
+div.table div.row div.menu:focus-within > ul {
+	display: block;
+}
+div.table div.row div.menu ul {
+	display: none;
+	list-style-type: none;
+	z-index: 100;
+	position: absolute;
+	box-shadow: 0 6.4px 14.4px 0 rgba(0,0,0,.132),0 1.2px 3.6px 0 rgba(0,0,0,.108);
+	border: 1px solid var(--BorderGrey);
+	background-color: var(--BackgroundWhite);
+	padding: 0px;
+	margin: 0px;
+	min-width: 150px;
+	right: 30px;
+}
+div.table div.row div.menu ul li {
+	padding: 8px;
+	background-repeat: no-repeat;
+	background-position: 2px center;
+	background-size: 20px;
+	padding-left: 24px;
+}
+div.table div.row div.menu ul li:hover {
+	background-color: var(--TableHighlight);
+}
+div.table div.row div.menu ul li a {
+	text-decoration: none;
+	display: block;
+	color: var(--TextBlack);
+}
+
+div.tableNavigation {
+	margin-top: 5px;
+}
+div.tableNavigation > span {
+	align-items: center;
+	justify-content: center;
+	transition: all 0.25s;
+	display: inline-flex;
+	min-width: 37px;
+	
+}
+div.tableNavigation > span > .pageNavItem {
+	padding: 10px;
+}
+
+div.tableNavigation > span:hover {
+	background-color: var(--ElementHighlight);
+}
+
+/* InfoTip */
+
+div.infotip {
+	padding: 10px;
+	margin: 10px 0px;
+	margin-right: 5px;
+	max-width: 1000px;
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-size: 20px;
+	background-origin: content-box;
+}
+div.infotip span {
+	display: block;
+	padding-left: 30px;
+}
+div.infotip.info {
+	border: 1px solid var(--InfoTipInfoBorder);
+	background-color: var(--InfoTipInfoBackground);
+	background-image: url('/images/StatusInfo.png?1');
+}
+div.infotip.warning {
+	border: 1px solid var(--InfoTipWarningBorder);
+	background-color: var(--InfoTipWarningBackground);
+	background-image: url('/images/StatusWarning.png');
+}
+div.infotip.error {
+	border: 1px solid var(--InfoTipErrorBorder);
+	background-color: var(--InfoTipErrorBackground);
+	background-image: url('/images/StatusError.png');
+}
