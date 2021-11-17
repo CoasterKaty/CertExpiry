@@ -457,7 +457,10 @@ try {
 
 
 			if ($warnCount > 0 || $expireCount > 0) {
-				$thisPage->addContent(new infoTip('There are ' . ($warnCount ? $warnCount . ' certificates/secrets nearing expiry' : '') . ($warnCount && $expireCount ? ' and ' : '') . ($expireCount ? $expireCount . ' expired certificates/secrets' : ''), 'warning'));
+				$thisPage->addContent(new infoTip('There ' .
+					($warnCount ? $certTools->itemAreIs($warnCount) . ' ' .  $warnCount . 'item' . $certTools->itemS($warnCount)' nearing expiry' : '') .
+					($warnCount && $expireCount ? ' and ' : '') .
+					($expireCount ? $expireCount . ' expired item' . $certTools->itemS($expireCount) : ''), 'warning'));
 			}
 
 			$thisPage->addContent(new infoTip('This list will automatically show any Azure AD App Registrations which have had certificates or secrets configured, along with Intune Apple Push Certificate, Apple VPP token, and Enrollment Program tokens. You can also manually add items (such as SSL certificates, or app registrations on an unconnected tenant).'));

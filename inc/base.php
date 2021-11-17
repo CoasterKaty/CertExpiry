@@ -24,6 +24,15 @@ class baseClass {
                 return str_replace('=', '', strtr(base64_encode($toEncode), '+/', '-_'));
         }
 
+	function itemAreIs($count) {
+		if ($count == 1) return 'is';
+		return 'are';
+	}
+
+	function itemS($count) {
+		if ($count == 1) return '';
+		return 's';
+	}
 
 	function uuid() {
         	//uuid function is not my code, but unsure who the original author is. KN
