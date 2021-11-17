@@ -16,7 +16,7 @@ html {
 	--InputToggleOn:#3f67a6;
 	--InputToggleOnBackground: #c8d5ea;
 	--ButtonNoFocus: #6b8ec7;
-	--DisabledButton: #e8e8e8;
+	--DisabledButton: #a8a8a8;
 
 	--TableHighlight: #e8e8e8;
 	--FormPlaceholder: #656567;
@@ -235,7 +235,8 @@ input[type="button"]:not(:disabled):hover, input[type="submit"]:not(:disabled):h
 	background-color: var(--InputBlue);
 }
 input[type="button"]:disabled, input[type="submit"]:disabled {
-	background-color: var(--DisabledButton) !important;
+	background-color: var(--DisabledButton);
+	cursor: initial;
 }
 .hidden {
 	display: none;
