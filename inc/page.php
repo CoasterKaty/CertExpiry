@@ -31,7 +31,7 @@ class sitePage {
 		try {
 			$this->modAuth = new modAuth($allowAnonymous);
 		} catch (Exception $e) {
-			throw new siteException(errorPage($e->getMessage()));
+			throw new siteException($e->getMessage());
 		}
 
 
