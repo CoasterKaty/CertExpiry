@@ -18,7 +18,7 @@ class alertMailTask  extends modCertTools {
 		if ($this->settings['emailAlerts'] && $this->settings['senderEmail']) {
 			$alertLastRun = $this->settings['alertLastRun'];
 			$alertFrequency = $this->settings['alertFrequency'];
-			$recipients = $this->getRecipients(0, $pageCount);
+			$recipients = $this->getRecipients(0, $pageCount, $statusArray);
 			if ($recipients) {
 				// if lastRun date is less than (now - frequency) then run
 				if (!$alertLastRun) $alertLastRun = '1999-01-01';

@@ -207,7 +207,7 @@ try {
 		case 'recipients':
 			$pageCount = 0;
 			$recipients = $certTools->getRecipients($pageNumber, $pageCount);
-			$thisPage->addContent(new infoTip('Alert recipients will receive e-mail alerts when any app registration secret or certificate is nearing expiry.'));
+			$thisPage->addContent(new infoTip('Alert recipients will receive e-mail alerts when any item is nearing expiry.'));
 			if ($recipients) {
 				$recipTable = new pageTable();
 				$recipTable->pages = 1;
@@ -336,7 +336,7 @@ try {
 
 			$muteField = $propertyForm->addField(new pageFormField('muteAlert', 'toggle'));
 			$muteField->label = 'Disable alerts for this item';
-			$muteField->help = 'This will disable e-mail based alerts for this item. E-mail alerts can be configured for the entire application in the Settings menu.';
+			$muteField->help = 'This will disable e-mail based alerts on this item for all recipients. E-mail alerts can be configured for the entire application in the Settings menu.';
 			$muteField->value = $thisApp['muteAlert'];
 
 			if ($thisApp['link']) {
@@ -378,7 +378,8 @@ try {
 		default:
 
 			$pageCount = 0;
-			$apps = $certTools->getApps($pageNumber, $pageCount);
+			$statusArray = array();
+			$apps = $certTools->getApps($pageNumber, $pageCount, $statusArray);
 			$appTable = new pageTable();
 			$appTable->pages = 1;
 			$appTable->page = $pageNumber;
@@ -412,9 +413,6 @@ try {
 			$azureBtn->icon = 'OpenPortal.png';
 			$azureBtn->newWindow = 1;
 
-			$warnCount = 0;
-			$expireCount = 0;
-
 			foreach ($apps as $app) {
 				$tableRow = $appTable->addRow();
 				$tableRow->column['Name']->text = $app['displayName'];
@@ -444,23 +442,21 @@ try {
 						break;
 					case 'WARN':
 						$tableRow->icon = 'StatusWarning.png';
-						$warnCount++;
 						break;
 					case 'EXPIRED':
 						$tableRow->icon = 'StatusError.png';
-						$expireCount++;
 						break;
 				}
 				$tableRow->column['Source']->text = $app['source'];
 			}
 
 
-			if ($warnCount > 0 || $expireCount > 0) {
+			if ($statusArray['WARN'] > 0 || $statusArray['EXPIRED'] > 0) {
 				$thisPage->addContent(new infoTip('There ' .
-					($warnCount ? $certTools->itemAreIs($warnCount) . ' ' .  $warnCount . ' item' . $certTools->itemS($warnCount) . ' nearing expiry' : '') .
-					($warnCount && $expireCount ? ' and ' : '') .
-					(!$warnCount && $expireCount ? $certTools->itemAreIs($expireCount) . ' ': '') .
-					($expireCount ? $expireCount . ' expired item' . $certTools->itemS($expireCount) : ''), 'warning'));
+					($statusArray['WARN'] ? $certTools->itemAreIs($statusArray['WARN']) . ' ' .  $statusArray['WARN'] . ' item' . $certTools->itemS($statusArray['WARN']) . ' nearing expiry' : '') .
+					($statusArray['WARN'] && $statusArray['EXPIRED'] ? ' and ' : '') .
+					(!$statusArray['WARN'] && $statusArray['EXPIRED'] ? $certTools->itemAreIs($statusArray['EXPIRED']) . ' ': '') .
+					($statusArray['EXPIRED'] ? $statusArray['EXPIRED'] . ' expired item' . $certTools->itemS($statusArray['EXPIRED']) : ''), 'warning'));
 			}
 
 			$thisPage->addContent(new infoTip('This list will automatically show any Azure AD App Registrations which have had certificates or secrets configured, along with Intune Apple Push Certificate, Apple VPP token, and Enrollment Program tokens. You can also manually add items (such as SSL certificates, or app registrations on an unconnected tenant).'));

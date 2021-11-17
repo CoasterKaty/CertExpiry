@@ -15,9 +15,9 @@ class modCertTools  extends baseClass {
 		$this->settings	= $this->getSettings();
 	}
 
-	function getApps($page = 0, &$pageCount) {
+	function getApps($page = 0, &$pageCount, &$statusArray) {
 		// Usually I'd just use LIMIT and OFFSET in a SQL query to cope with the paging, but this data isn't from SQL. So we have to grab everything then sort then filter.
-
+		$statusArray = array('OK' => 0, 'WARN' => 0, 'EXPIRED' => 0);
 		// get all app registrations on tenant
 		$allApps = $this->modGraph->getApps();
 		foreach($allApps as $app) {
@@ -37,7 +37,7 @@ class modCertTools  extends baseClass {
 					}
 
 
-
+					$statusArray[$status]++;
 					$appList[] = array(	'id'			=> $app->id,
 								'appId'			=> $app->appId,
 								'link'			=> 'https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Credentials/appId/' . $app->appId . '/isMSAApp/',
@@ -69,6 +69,7 @@ class modCertTools  extends baseClass {
 						$appLD['muteAlert'] = $appLocalData['intMuteAlert'];
 						$appLD['notes'] = $appLocalData['txtNotes'];
 					}
+					$statusArray[$status]++;
 
 
 					$appList[] = array(	'id'			=> $app->id,
@@ -103,6 +104,7 @@ class modCertTools  extends baseClass {
 				$appLD['muteAlert'] = $appLocalData['intMuteAlert'];
 				$appLD['notes'] = $appLocalData['txtNotes'];
 			}
+			$statusArray[$status]++;
 
 			// there is no "created date" so use last modified instead
 			$appList[] = array(	'id'			=> $cert['id'],
@@ -129,6 +131,7 @@ class modCertTools  extends baseClass {
 				$status = 'WARN';
 				if (strtotime($cert['dtExpiresDate']) < strtotime('+0 day')) $status = 'EXPIRED';
 				if (strtotime($cert['dtExpiresDate']) > strtotime('+' . $this->settings['alertDays'] . ' day')) $status = 'OK';
+				$statusArray[$status]++;
 
 				$appList[] = array(	'appId'			=> '',
 							'dbId'			=> $cert['intCertID'],
