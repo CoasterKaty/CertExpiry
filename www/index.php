@@ -125,11 +125,10 @@ try {
 								'alertTemplate'	 => $_POST['alertTemplate'],
 								'listItems'	 => $_POST['listItems']
 							));
-				echo '1';
+				header('Location: ' . $_POST['httpReferer']);
 				exit;
 			}
 			$settingsForm = new pageForm('settings', 'index.php?action=settings&submitted=1');
-//			$settingsForm->method = 'ajax';
 
 			$alertDayField = $settingsForm->addField(new pageFormField('alertDays', 'number'));
 			$alertDayField->label = 'Alert when expiry is due in (days)';
