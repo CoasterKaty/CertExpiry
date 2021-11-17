@@ -104,6 +104,7 @@ class modDB {
             $query .= '`' . $fieldName . '` = \'' . mysqli_real_escape_string($this->myDB, $fieldValue) . '\'';
             $intCount++;
         }
+
         return mysqli_query($this->myDB, $query);
     }
 

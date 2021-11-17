@@ -62,6 +62,7 @@ INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('senderEmail', '');
 INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('alertFrequency', '7');
 INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('emailAlerts', '1');
 INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('listItems', '25');
+INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('alertLastRun', '');
 INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('alertTemplate', '<html>
 <head>
 <style>

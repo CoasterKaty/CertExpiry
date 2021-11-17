@@ -23,7 +23,7 @@ try {
 		$feedbackBtn = new navigationItem('', 'main', 'right');
 		$feedbackBtn->icon = 'Feedback.png';
 		$feedbackBtn->tooltip = 'Send feedback or a feature request';
-		$feedbackBtn->link = 'https://github.com/CoasterKaty/CertTools/issues';
+		$feedbackBtn->link = 'https://github.com/CoasterKaty/CertExpiry/issues';
 		$feedbackBtn->newWindow = 1;
 		$feedbackBtn->width = 40;
 		$thisPage->addNavigation($feedbackBtn);
@@ -144,6 +144,7 @@ try {
 			$emailAlertField->value = $settings['emailAlerts'];
 
 			$alertFreqField = $settingsForm->addField(new pageFormField('alertFrequency', 'dropdown'));
+			$alertFreqField->help = 'Warning: Do not set this higher than the \'alert days\' setting';
 			$alertFreqField->label = 'Alert frequency';
 			$alertFreqField->value = $settings['alertFrequency'];
 			$alertFreqField->options = array('1' => 'Every day', '7' => 'Every week', '14' => 'Every two weeks');

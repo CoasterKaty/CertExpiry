@@ -347,11 +347,13 @@ class modCertTools  extends baseClass {
 		return $toRet;
 	}
 
-	function getRecipients($page = 1, &$pageCount) {
-		$totalItems = $this->modDB->Count('SELECT * FROM tblAlertRecipients');
-		$pageCount = ceil($totalItems / $this->settings['listItems']);
-
-		return $this->modDB->QueryArray('SELECT * FROM tblAlertRecipients ORDER BY txtEmail ASC LIMIT ' . $this->settings['listItems'] . ' OFFSET ' . (($page-1) * $this->settings['listItems']));
+	function getRecipients($page = 0, &$pageCount) {
+		if ($page) {
+			$totalItems = $this->modDB->Count('SELECT * FROM tblAlertRecipients');
+			$pageCount = ceil($totalItems / $this->settings['listItems']);
+			return $this->modDB->QueryArray('SELECT * FROM tblAlertRecipients ORDER BY txtEmail ASC LIMIT ' . $this->settings['listItems'] . ' OFFSET ' . (($page-1) * $this->settings['listItems']));
+		}
+		return $this->modDB->QueryArray('SELECT * FROM tblAlertRecipients ORDER BY txtEmail ASC');
 	}
 
 	function addRecipient($args) {
