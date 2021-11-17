@@ -129,7 +129,7 @@ try {
 				exit;
 			}
 			$settingsForm = new pageForm('settings', 'index.php?action=settings&submitted=1');
-			$settingsForm->method = 'ajax';
+//			$settingsForm->method = 'ajax';
 
 			$alertDayField = $settingsForm->addField(new pageFormField('alertDays', 'number'));
 			$alertDayField->label = 'Alert when expiry is due in (days)';
@@ -283,7 +283,7 @@ try {
 			}
 			$propertyForm = new pageForm('properties', '');
 
-
+			$propertyForm->method = 'ajax';
 			$dnField = $propertyForm->addField(new pageFormField('displayName', 'text'));
 			$dnField->label = 'Display Name';
 			$dnField->value = $thisApp['displayName'];
