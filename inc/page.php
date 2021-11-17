@@ -49,7 +49,7 @@ class sitePage {
 			$profile = $this->modGraph->getProfile();
 			$photo = $this->modGraph->getPhoto();
 
-			return '<div class="login" tabindex="-1" id="m_login"><div><span>' . $profile->displayName . '</span><span class="light">' . $profile->userPrincipalName . '</span></div>' . $photo . '<ul>' . ($this->displayRole ? '<li>Role: ' . ($this->modAuth->checkUserRole('Role.User') ? 'User' : '') . ($this->modAuth->checkUserRole('Role.Admin') ? 'Admin' : '') . ($this->modAuth->checkUserRole('Default Access') ? 'Read Only' : '') . '</li>' : '') . '<li><a href="https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0">Sign Out</a></li></ul></div>';
+			return '<div class="login" tabindex="-1" id="m_login"><div><span>' . $profile->displayName . '</span><span class="light">' . $profile->userPrincipalName . '</span></div>' . $photo . '<ul>' . ($this->displayRole ? '<li>Role: ' . ($this->modAuth->checkUserRole('Role.User') ? 'User' : '') . ($this->modAuth->checkUserRole('Role.Admin') ? 'Admin' : '') . ($this->modAuth->checkUserRole('Default Access') ? 'Read Only' : '') . '</li>' : '') . '<li><a href="' . (strpos($_SERVER['REQUEST_URI'], '?') ? explode('?', $_SERVER['REQUEST_URI'])[0] : $_SERVER['REQUEST_URI']) . '?action=logout">Sign Out</a></li></ul></div>';
 		}
 		$this->preloadImages[] = '/images/notLoggedIn.png';
 		return '<div class="login" tabindex="-1" id="m_login"><div><span class="loggedout">Not signed in</span></div><span class="userPhoto notLoggedIn"><img src="/images/notLoggedIn.png" /></span><ul><li><a href="' . $_SERVER['REQUEST_URI'] . (strstr($_SERVER['REQUEST_URI'], '?') ? '&' : '?') . 'login=1">Sign in</a></li></ul></div>';
