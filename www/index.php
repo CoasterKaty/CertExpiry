@@ -458,8 +458,9 @@ try {
 
 			if ($warnCount > 0 || $expireCount > 0) {
 				$thisPage->addContent(new infoTip('There ' .
-					($warnCount ? $certTools->itemAreIs($warnCount) . ' ' .  $warnCount . 'item' . $certTools->itemS($warnCount)' nearing expiry' : '') .
+					($warnCount ? $certTools->itemAreIs($warnCount) . ' ' .  $warnCount . ' item' . $certTools->itemS($warnCount) . ' nearing expiry' : '') .
 					($warnCount && $expireCount ? ' and ' : '') .
+					(!$warnCount && $expireCount ? $certTools->itemAreIs($expireCount) . ' ': '') .
 					($expireCount ? $expireCount . ' expired item' . $certTools->itemS($expireCount) : ''), 'warning'));
 			}
 
