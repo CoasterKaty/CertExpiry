@@ -15,7 +15,7 @@ class alertMailTask  extends modCertTools {
 	}
 
 	function sendAlert() {
-		if ($this->settings['emailAlerts']) {
+		if ($this->settings['emailAlerts'] && $this->settings['senderEmail']) {
 			$alertLastRun = $this->settings['alertLastRun'];
 			$alertFrequency = $this->settings['alertFrequency'];
 			$recipients = $this->getRecipients(0, $pageCount);
@@ -48,22 +48,17 @@ class alertMailTask  extends modCertTools {
 					$alertMessage = str_replace('{$url}', '<a href="' . _URL . '">' . _URL . '</a>', $alertMessage);
 
 					foreach ($recipients as $recipient) {
-						$recipArray[] = array('address' => $recipient['txtEmail']);
-
+						$mailArgs = array(	'subject' => 'Expiring Certificates Notification',
+									'importance' => 'High',
+									'toRecipients' => array(array('address' => $recipient['txtEmail'])),
+									'body' => $alertMessage);
+						$this->modGraph->sendMail($this->settings['senderEmail'], $mailArgs);
 					}
-					$mailArgs = array(	'subject' => 'Expiring Certificates Notification',
-								'importance' => 'High',
-								'toRecipients' => array(array('address' => $this->settings['senderEmail'])),
-								'bccRecipients' => $recipArray,
-								'body' => $alertMessage);
-					$this->modGraph->sendMail($this->settings['senderEmail'], $mailArgs);
-
 					$this->saveSettings(array('alertLastRun' => date('Y-m-d')));
 				}
 			}
 		}
 	}
-
 }
 $alertMailer = new alertMailTask();
 $alertMailer->sendAlert();
