@@ -305,20 +305,19 @@ try {
 			$statusField->label = 'Status';
 			switch ($thisApp['status']) {
 				case 'EXPIRED':
-					$statusField->value = 'WARNING! Certificate or secret has expired!';
+					$statusField->value = 'WARNING! This item has expired!';
 					break;
 				case 'WARN':
-					$statusField->value = 'WARNING! Certificate or secret is due to expire soon.';
+					$statusField->value = 'WARNING! This item is due to expire soon.';
 					break;
 				case 'OK':
-					$statusField->value = 'Good - Certificate or secret is not nearing expiry.';
+					$statusField->value = 'Good - This item is not nearing expiry.';
 					break;
 			}
 			$statusField->disabled = 1;
 
 			$createdField = $propertyForm->addField(new pageFormField('createdDate', 'date'));
-			$createdField->label = 'Created or Last Modified';
-			$createdField->help = 'This will show the date the item was created (app registration and manual entries) or last modified (Intune certificates)';
+			$createdField->label = ($type == 'intune' ? 'Last Modified' : 'Created');
 			$createdField->value = date('Y-m-d', strtotime($thisApp['createdDateTime']));
 			$createdField->disabled = 1;
 			$renewalField = $propertyForm->addField(new pageFormField('renewalDate', 'date'));
