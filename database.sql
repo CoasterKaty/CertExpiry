@@ -56,7 +56,8 @@ CREATE TABLE `tblAzureCerts` (
 INSERT INTO `tblCertTypes` (`intTypeID`, `txtName`) VALUES ('1', 'SSL Certificate');
 INSERT INTO `tblCertTypes` (`intTypeID`, `txtName`) VALUES ('2', 'Azure AD App Reg Secret');
 INSERT INTO `tblCertTypes` (`intTypeID`, `txtName`) VALUES ('3', 'Azure AD App Reg Certificate');
-INSERT INTO `tblCertTypes` (`intTypeID`, `txtName`) VALUES ('4', 'Other');
+INSERT INTO `tblCertTypes` (`intTypeID`, `txtName`) VALUES ('4', 'Domain');
+INSERT INTO `tblCertTypes` (`intTypeID`, `txtName`) VALUES ('5', 'Other');
 INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('alertDays', '45');
 INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('senderEmail', '');
 INSERT INTO `tblSettings` (`txtName`, `txtValue`) VALUES ('alertFrequency', '7');
