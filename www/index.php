@@ -125,7 +125,7 @@ try {
 								'alertTemplate'	 => $_POST['alertTemplate'],
 								'listItems'	 => $_POST['listItems']
 							));
-				header('Location: ' . $_POST['httpReferer']);
+				header('Location: ' . urldecode($_POST['httpReferer']));
 				exit;
 			}
 			$settingsForm = new pageForm('settings', 'index.php?action=settings&submitted=1');

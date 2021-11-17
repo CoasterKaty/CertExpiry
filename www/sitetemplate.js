@@ -84,20 +84,21 @@ function submitForm(formID) {
 
 	if (!validateForm(formID)) return false;
 
+	var elInputs = elForm.getElementsByTagName('input');
+	var elSubmit;
+	for (i = 0; i < elInputs.length; i++) {
+		if (elInputs[i].getAttribute('type') == 'submit') {
+			elSubmit = elInputs[i];
+			break;
+		}
+	}
+
+	if (elSubmit) elSubmit.disabled = true;
+
 	if (formMethod == 'post') return true;
 
 	if (formMethod == 'ajax') {
-		// disable submit button now. Somehow.
 
-		var elInputs = elForm.getElementsByTagName('input');
-		var elSubmit;
-		for (i = 0; i < elInputs.length; i++) {
-			if (elInputs[i].getAttribute('type') == 'submit') {
-				elSubmit = elInputs[i];
-				break;
-			}
-		}
-		if (elSubmit) elSubmit.disabled = true;
 		// Post all the data back via XHR, then close the flyout.
 		var formData = new FormData(elForm);
 		var xhr = new XMLHttpRequest();
