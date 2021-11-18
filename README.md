@@ -1,8 +1,11 @@
-# CertTools
+# CertExpiry
 
 Katy Nicholson
 
 https://katystech.blog/
+
+Setup instructions etc available at: https://katystech.blog/2021/11/certexpiry/
+
 
 PHP project for tracking Azure AD App Registration client secrets due to expire, and (manually) tracking SSL certificates
 
