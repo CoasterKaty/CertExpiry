@@ -23,7 +23,7 @@ class alertMailTask  extends modCertTools {
 				// if lastRun date is less than (now - frequency) then run
 				if (!$alertLastRun) $alertLastRun = '1999-01-01';
 				if (strtotime($alertLastRun) < strtotime('-' . $alertFrequency . ' day')) {
-					$apps = $this->getApps(0, $pageCount);
+					$apps = $this->getApps(0, $pageCount, $statuses);
 					// Output table showing Warning first, then Expired. Only show items which haven't been muted.
 					$alertMuted = 0;
 					$alertTable = '<table><thead><tr><td>Status</td><td>Expiry Date</td><td>Item</td><td>Type</td></tr></thead><tbody>';

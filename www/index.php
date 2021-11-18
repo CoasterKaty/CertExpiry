@@ -222,7 +222,7 @@ try {
 				$recipientMenu = new pageTableMenu();
 				$deleteBtn = $recipientMenu->addItem(new pageTableMenuItem('Delete', 'index.php?action=deleterecipient&id=$ID'));
 				$deleteBtn->icon = 'Delete.png';
-				$deleteBtn->confirm = 'Are you sure you want to delete <b>$NAME</b>?';
+				$deleteBtn->confirm = 'Are you sure you want to delete $NAME?';
 
 				foreach ($recipients as $key => $recipient) {
 					$tableRow = $recipTable->addRow();
@@ -401,7 +401,7 @@ try {
 			$propBtn->flyoutTitle = '$NAME';
 			$deleteBtn = $editableMenu->addItem(new pageTableMenuItem('Delete', 'index.php?action=delete&id=$ID'));
 			$deleteBtn->icon = 'Delete.png';
-			$deleteBtn->confirm = 'Are you sure you want to delete <b>$NAME</b>?';
+			$deleteBtn->confirm = 'Are you sure you want to delete $NAME?';
 
 			$nonEditableMenu = new pageTableMenu();
 			$propBtn = $nonEditableMenu->addItem(new pageTableMenuItem('More Details', ''));
