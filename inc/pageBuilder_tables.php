@@ -5,11 +5,6 @@ Katy Nicholson
 https://katystech.blog/
 */
 
-/*TO DO list:
-
-- Table:	ISSUE: paging doesn't work if we use the pageTable class's sort routine, as we are sorting only the data on screen
-
-*/
 class pageTable {
 	private $columns;
 	private $rows;

@@ -5,20 +5,6 @@ Katy Nicholson
 https://katystech.blog/
 */
 
-/*TO DO list:
-
-- Forms:	Disabled elements - expand to cover all fields rather than just text
-		Dropdown and lists: If you set required="required" it requires every element to be selected at once
-		Dropdown and lists: Scroll bar for large lists
-		List: Allow unselect of item in single select list
-		Form validation - highlight missed/incorrect fields in red
-		Form validation - don't enable button until validation passes (different style for disabled buttons)
-		Toggle: Allow names for the options, then show the toggle as about 300px wide with the text 
-		(     This is off       * This is on *    )
-
-*/
-
-
 
 class pageForm {
 	public $action;
