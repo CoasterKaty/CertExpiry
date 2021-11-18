@@ -11,7 +11,7 @@ class alertMailTask  extends modCertTools {
 		$this->modGraph = new modGraphNI();
 		parent::__construct();
 		$this->settings = $this->getSettings();
-		error_reporting(E_ALL & ~E_NOTICE);
+		error_reporting(E_ERROR);
 	}
 
 	function sendAlert() {
