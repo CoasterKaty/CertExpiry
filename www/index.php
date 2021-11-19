@@ -76,11 +76,6 @@ try {
 	}
 
 	switch ($pageAction) {
-		case 'alert':
-			require_once '../inc/alert_mail_task.php';
-			$alertMail = new alertMailTask();
-			$alertMail->sendAlert();
-			break;
 		case 'newcert':
 			if ($pageSubmitted) {
 				$certTools->addCert(array('type' => $_POST['type'], 'displayName' => $_POST['displayName'], 'renewalDate' => $_POST['renewalDate'], 'notes' => $_POST['notes'], 'creator' => $thisPage->modAuth->userName));

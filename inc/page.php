@@ -174,25 +174,6 @@ class sitePage {
 				break;
 		}
 	}
-
-
-	function prettyDate($date) {
-		//$date should be in timestamp form, Y-m-d H:i:s
-		$pastDate = strtotime($date);
-		$curDate = time();
-		$timeElapsed = $curDate - $pastDate;
-		$hours = round($timeElapsed / 3600);
-		$days = round($timeElapsed / 86400);
-		$weeks = round($timeElapsed / 604800);
-		$months = round($timeElapsed / 2600640);
-		$years = round($timeElapsed / 31207680);
-		if ($years > 0) return $years . ' year' . ($years > 1 ? 's' : '') . ' ago';
-		if ($months > 0) return $months . ' month' . ($months > 1 ? 's' : '') . ' ago';
-		if ($weeks > 0) return $weeks . ' week' . ($weeks > 1 ? 's' : '') . ' ago';
-		if ($days > 0) return $days . ' day' . ($days > 1 ? 's' : '') . ' ago';
-		if ($hours > 0) return $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago';
-		return 'Just now';
-	}
 }
 
 
