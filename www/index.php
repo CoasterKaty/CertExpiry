@@ -374,6 +374,11 @@ try {
 			$pageCount = 0;
 			$statusArray = array();
 			$apps = $certTools->getApps($pageNumber, $pageCount, $statusArray);
+			if ($pageCount < $pageNumber) {
+				// Fix bug #1, if the user was on the last page and increased pagesize in settings, reset them back to page 1
+				$pageNumber = 1;
+				$apps = $certTools->getApps($pageNumber, $pageCount, $statusArray);
+			}
 			$appTable = new pageTable();
 			$appTable->pages = 1;
 			$appTable->page = $pageNumber;
