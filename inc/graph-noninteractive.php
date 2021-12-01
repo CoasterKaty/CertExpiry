@@ -56,11 +56,22 @@ class modGraphNI extends baseClass {
 			throw new siteException('No token defined');
 		}
 
-		$apps = json_decode($this->sendGetRequest($this->baseURL . 'applications'));
-		if (property_exists($apps, 'error')) {
-			throw new siteException(print_r($apps->error));
+		$apps = $this->getPagedData($this->baseURL . 'applications');
+		return $apps;
+	}
+	function getPagedData($url) {
+		$itemArray;
+		$data = json_decode($this->sendGetRequest($url));
+		if (property_exists($data, 'error')) {
+			throw new siteException(print_r($data->error));
 		}
-		return $apps->value;
+		foreach($data->value as $item) {
+			$itemArray[] = $item;
+		}
+		if (property_exists($data, '@odata.nextLink')) {
+			$itemArray = array_merge($itemArray, $this->getPagedData($data->{'@odata.nextLink'}));
+		}
+		return $itemArray;
 	}
 
 	function getApp($appID) {
