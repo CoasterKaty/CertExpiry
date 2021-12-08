@@ -35,6 +35,7 @@ define('_OAUTH_AUTH_CERTFILE', '/path/to/certificate.crt');
 define('_OAUTH_AUTH_KEYFILE', '/path/to/privatekey.pem');
 // on Windows, the certificate paths should be in the form c:/path/to/cert.crt
 
+
 // URL to this website, no trailing slash.
 define('_URL', 'https://certexpiry.domain.tld');
 ?>
