@@ -17,10 +17,11 @@ html {
 	--InputToggleOnBackground: #c8d5ea;
 	--ButtonNoFocus: #6b8ec7;
 	--DisabledButton: #a8a8a8;
-
-	--TableHighlight: #e8e8e8;
+	--InputBackground: #ffffff;
 	--FormPlaceholder: #656567;
 	--Required: #ff0000;
+
+	--TableHighlight: #e8e8e8;
 	--BorderDarkGrey: #a6a6a6;
 	--LinkBlue: #3f67a6;
 	--TableRowBorder: #bdc1c1;
@@ -33,8 +34,60 @@ html {
 
 	--FadedBackground: rgba(0,0,0,0.3);
 	--ElementHighlight: #e8e8e8;
-}
+	--FlyoutShadow: 0 6.4px 14.4px 0 rgba(0,0,0,.132),0 1.2px 3.6px 0 rgba(0,0,0,.108);
 
+	--imgClose: url('/images/Close.png');
+	--imgMenu: url('/images/Menu.png');
+	--imgMenuHot: url('/images/MenuHot.png');
+}
+@media (prefers-color-scheme: dark) {
+	html {
+		--BorderGrey: #e6e6e6;
+		--BackgroundWhite: #333333;
+		--TextWhite: #ffffff;
+		--TextBlack: #ffffff;
+		--BackgroundBlack: #000000;
+		--BackgroundBlue: #243a5e;
+
+		--LoadingGrey: #999999;
+		--LoadingBlue: #3f67a6;
+
+		--InputBlue: #3f67a6;
+		--InputBorder: #bdc1c1;
+		--InputToggleOff: #ffffff;
+		--InputToggleOffBackground: #666666;
+		--InputToggleOn:#3f67a6;
+		--InputToggleOnBackground: #c8d5ea;
+		--ButtonNoFocus: #6b8ec7;
+		--DisabledButton: #a8a8a8;
+		--InputBackground: #666666;
+		--FormPlaceholder: #e6e6e6;
+		--Required: #ff0000;
+
+		--TableHighlight: #737373;
+		--BorderDarkGrey: #a6a6a6;
+		--LinkBlue: #99c2ff;
+		--TableRowBorder: #bdc1c1;
+		--InfoTipInfoBorder: #0066ff;
+		--InfoTipInfoBackground: #003d99;
+		--InfoTipWarningBorder: #ffd500;
+		--InfoTipWarningBackground: #998000;
+		--InfoTipErrorBorder: #cc3300;
+		--InfoTipErrorBackground: #b32d00;
+
+		--FadedBackground: rgba(0,0,0,0.3);
+		--ElementHighlight: #737373;
+		--FlyoutShadow: 0 6.4px 14.4px 0 rgba(255,255,255,.132),0 1.2px 3.6px 0 rgba(255,255,255,.108);
+
+
+		--imgClose: url('/images/Close_dark.png');
+		--imgMenu: url('/images/Menu_dark.png');
+		--imgMenuHot: url('/images/MenuHot_dark.png');
+
+	}
+
+
+}
 * {
 	font-family: "Segoe UI", Calibri, sans-serif;
 }
@@ -44,6 +97,8 @@ html, body {
 	font-size: 13px;
 	max-height: 100vh;
 	height: 100vh;
+	background-color: var(--BackgroundWhite);
+	color: var(--TextBlack);
 }
 
 a {
@@ -92,11 +147,10 @@ div#flyout {
 	right: 0px;
 	height: 100vh;
 	width: 500px;
-	border-left: 1px solid var(--BorderGrey);
 	overflow: hidden;
 	top: 0px;
 	background-color: var(--BackgroundWhite);
-	box-shadow: 0 6.4px 14.4px 0 rgba(0,0,0,.132),0 1.2px 3.6px 0 rgba(0,0,0,.108);
+	box-shadow: var(--FlyoutShadow);
 
 }
 
@@ -144,7 +198,7 @@ div#flyout div#flyoutClose {
 	width: 18px;
 	height: 18px;
 	cursor: pointer;
-	background-image: url('/images/Close.png');
+	background-image: var(--imgClose);
 	background-repeat: no-repeat;
 	background-size: 18px;
 	background-position: center;
@@ -152,7 +206,7 @@ div#flyout div#flyoutClose {
 	transition: all 0.25s;
 }
 div#flyout div#flyoutTitle {
-	color: #385b94;
+	color: var(--LoadingBlue);
 	font-size: 24px;
 	font-weight: bold;
 	padding: 4px 8px;
@@ -175,6 +229,7 @@ form div.table {
 	width: calc(100% - 17px);
 	border: 1px solid var(--InputBorder);
 	border-bottom: none;
+	background-color: var(--InputBackground);
 }
 form div.table div.row * {
 	cursor: pointer;
@@ -212,6 +267,11 @@ textarea, input {
 	outline: none;
 	border: 1px solid var(--InputBorder);
 	box-sizing: border-box;
+	background-color: var(--InputBackground);
+	color: var(--TextWhite);
+}
+textarea::placeholder, input::placeholder {
+	color: var(--FormPlaceholder);
 }
 input.mandatory {
 	border: 1px solid #ff0000;
@@ -287,6 +347,7 @@ div.dropdown {
 	position: relative;
 	height: 20px;
 	cursor: pointer;
+	background-color: var(--InputBackground);
 	background-image: url('/images/dropdownExpand.png?1');
 	background-repeat: no-repeat;
 	background-position-x: right;
@@ -312,9 +373,9 @@ div.dropdown ul {
 	display: none;
 	z-index: 300;
 	position: absolute;
-	background-color: var(--BackgroundWhite);
-	box-shadow: 0 6.4px 14.4px 0 rgba(0,0,0,.132),0 1.2px 3.6px 0 rgba(0,0,0,.108);
-	border: 1px solid var(--BorderGrey);
+	background-color: var(--InputBackground);
+	border: 1px solid var(--InputBorder);
+	box-shadow: var(--FlyoutShadow);
 	list-style-type: none;
 	margin: -1px;
 	top: 21px;
@@ -652,7 +713,7 @@ div.table div.row div.menu {
 	min-width: 30px;
 	max-width: 30px;
 	position: relative;
-	background-image: url('/images/Menu.png');
+	background-image: var(--imgMenu);
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 20px;
@@ -661,7 +722,7 @@ div.table div.row div.menu {
 	
 }
 div.table div.row div.menu:hover, div.table div.row div.menu:focus-within {
-	background-image: url('/images/MenuHot.png');
+	background-image: var(--imgMenuHot);
 }
 div.table div.row div.menu:not(:focus-within) > ul {
 	display: none !important;
