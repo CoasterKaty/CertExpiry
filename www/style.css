@@ -268,7 +268,7 @@ textarea, input {
 	border: 1px solid var(--InputBorder);
 	box-sizing: border-box;
 	background-color: var(--InputBackground);
-	color: var(--TextWhite);
+	color: var(--TextBlack);
 }
 textarea::placeholder, input::placeholder {
 	color: var(--FormPlaceholder);
@@ -389,6 +389,9 @@ div.dropdown li {
 
 	display: block;
 	padding: 2px;
+}
+div.dropdown li label {
+	padding-top: 2px;
 }
 div.dropdown li:hover {
 	background-color: var(--TableHighlight);
