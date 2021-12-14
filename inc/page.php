@@ -112,8 +112,12 @@ class sitePage {
 				if ($navItem->subMenu) {
 					$output .= '<ul>';
 					foreach ($navItem->subMenu as $subItem) {
-						if ($subItem->icon) $this->preloadImages[] = '/images/sidenav/' . $subItem->icon;
-						$output .= '<li' .  ($subItem->link ? ' onclick="JavaScript:location.href=\'' . $subItem->link . '\';"' : '') . ($subItem->flyoutAction ? ' onclick="JavaScript:openFlyout(\'' . $subItem->flyoutAction . '\', \'' . $subItem->flyoutTitle . '\');"' : '') . ($subItem->icon ? ' style="background-image: url(\'/images/sidenav/' . $subItem->icon . '\');"' : '') . ($subItem->selected ? ' class="selected"' : '') . '>' . ($subItem->link ? '<a href="' . $subItem->link . '">'  . $subItem->name . '</a>' : $subItem->name) .  '</li>' . _NL;
+						if ($subItem->type == 'dropdown') {
+							$output .= '<li class="dropdown"> ' . $subItem->outputDropdown() . '</li>';
+						} else {
+							if ($subItem->icon) $this->preloadImages[] = '/images/sidenav/' . $subItem->icon;
+							$output .= '<li' .  ($subItem->link ? ' onclick="JavaScript:location.href=\'' . $subItem->link . '\';"' : '') . ($subItem->flyoutAction ? ' onclick="JavaScript:openFlyout(\'' . $subItem->flyoutAction . '\', \'' . $subItem->flyoutTitle . '\');"' : '') . ($subItem->icon ? ' style="background-image: url(\'/images/sidenav/' . $subItem->icon . '\');"' : '') . ($subItem->selected ? ' class="selected"' : '') . '>' . ($subItem->link ? '<a href="' . $subItem->link . '">'  . $subItem->name . '</a>' : $subItem->name) .  '</li>' . _NL;
+						}
 					}
 					$output .= '</ul>' . _NL;
 				}
@@ -201,7 +205,7 @@ class navigationItem {
 	public $name;
 	public $subMenu;
 	public $position = 'left';	//left, centre, right
-	public $type = 'main';		//main, sub, side
+	public $type = 'main';		//main, sub, side, dropdown
 	public $flyoutAction = '';	//URL to open in flyout on click
 	public $flyoutTitle = '';	//Title to show in flyout
 	public $link = '';		//URL to open on click, in main window
@@ -210,6 +214,8 @@ class navigationItem {
 	public $tooltip;		//tooltiptext
 	public $newWindow;		// open link in new window
 	public $width;			//use with icon to set fixed width
+	public $options;		//use with dropdown only
+	public $action;			//use with dropdown only
 
 	function __construct($name, $type='main', $position='left') {
 		$this->name = $name;
@@ -221,6 +227,18 @@ class navigationItem {
 	function addItem($subItem) {
 		$this->subMenu[] = $subItem;
 		return $subItem;
+	}
+
+	function outputDropdown() {
+
+		$output = '<div class="dropdown" tabindex="-2"><span onclick="dropdownClose(\'' . $this->id . '\');" id="' . $this->id . ($this->value ? '">' . $this->options[$this->value] : '" class="placeholder">' . $this->name) . '</span><ul id="u' . $this->id . '">';
+		foreach ($this->options as $listValue => $listText) {
+		        $thisRowID = 'r' . uniqid();
+		        $thisLabelID = 'l' . uniqid();
+		        $output .= '<li><input ' . ($this->value == $listValue ? 'checked="checked" ' : '') . 'type="radio" class="hidden" name="' . $this->name . '" id="' . $thisRowID . '" value="' . $listValue . '" onclick="JavaScript:dropdownSelected(\'' . $this->id . '\', \'' . $thisLabelID . '\');" onchange="JavaScript:location.href=\'' . str_replace('$VALUE', $listValue, $this->action) . '\';"><label id="' . $thisLabelID . '" for="' . $thisRowID . '">' . $listText . '</label></li>';
+		}
+		$output .= '</ul></div>';
+		return $output;
 	}
 
 }

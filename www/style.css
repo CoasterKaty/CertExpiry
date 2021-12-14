@@ -354,6 +354,10 @@ div.dropdown {
 	transition: all 0.25s;
 
 }
+div#navSide div.dropdown {
+	width: initial;
+	margin-right: 3px;
+}
 div.dropdown:focus-within {
 	background-image: url('/images/dropdownCollapse.png?1');
 	border: 1px solid #385b94;
@@ -385,13 +389,17 @@ div.dropdown ul {
 div.dropdown * {
 	cursor: pointer;
 }
+#navSide > div.navSideGroup > ul > li.dropdown {
+	padding: initial;
+}
 div.dropdown li {
 
 	display: block;
 	padding: 2px;
 }
 div.dropdown li label {
-	padding-top: 2px;
+	display: block;
+	padding: 6px 0px;
 }
 div.dropdown li:hover {
 	background-color: var(--TableHighlight);
@@ -624,13 +632,13 @@ div#navSide + div#mainBody {
 	border-bottom: 1px solid var(--TableRowBorder);
 	display: block;
 }
-#navSide ul {
+#navSide > div.navSideGroup > ul {
 	list-style-type: none;
 	margin: 0px;
 	padding: 0px;
 }
 
-#navSide ul li {
+#navSide > div.navSideGroup > ul > li {
 	font-weight: normal;
 	padding: 8px 28px;
 	padding-right: 0px;
@@ -642,6 +650,9 @@ div#navSide + div#mainBody {
 }
 #navSide ul li:hover, #navSide ul li.selected {
 	background-color: var(--TableHighlight);
+}
+#navSide ul li.dropdown:hover {
+	background-color: initial;
 }
 
 #navSide ul li a {
