@@ -31,9 +31,8 @@ class sitePage {
 		try {
 			$this->modAuth = new modAuth($allowAnonymous);
 		} catch (Exception $e) {
-			throw new siteException($e->getMessage());
+			throw new siteException($e->getMessage() . "<br>sitePage->__construct()");
 		}
-
 
 		if (!$allowAnonymous || $this->modAuth->isLoggedIn) $this->modGraph = new modGraph();
 	}

@@ -19,7 +19,7 @@ class modGraphNI extends baseClass {
 	}
 
 	function getToken() {
-		if (_OAUTH_AUTH_CERTFILE) {
+		if (defined('_OAUTH_AUTH_CERTFILE')) {
 			// Use the certificate specified
 			//https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-certificate-credentials
 			$cert = file_get_contents(_OAUTH_AUTH_CERTFILE);
@@ -46,14 +46,14 @@ class modGraphNI extends baseClass {
 	        $reply = $this->sendPostRequest('https://login.microsoftonline.com/' . _OAUTH_TENANTID . '/oauth2/v2.0/token', $oauthRequest);
 	        $replyData = json_decode($reply['data']);
 		if ($reply['code'] == '401') {
-			throw new siteException($replyData->error_description);
+			throw new siteException($replyData->error_description . "<br>" . print_r($replyData, true) . "<br>modGraphNI->getToken");
 		}
 	        return $replyData->access_token;
 	}
 
 	function getApps() {
 		if (!$this->Token) {
-			throw new siteException('No token defined');
+			throw new siteException('No token defined<br>modGraphNI->getApps');
 		}
 
 		$apps = $this->getPagedData($this->baseURL . 'applications');
@@ -63,7 +63,7 @@ class modGraphNI extends baseClass {
 		$itemArray;
 		$data = json_decode($this->sendGetRequest($url));
 		if (property_exists($data, 'error')) {
-			throw new siteException(print_r($data->error));
+			throw new siteException(print_r($data->error) . "<br>modGraphNI->getPagedData");
 		}
 		foreach($data->value as $item) {
 			$itemArray[] = $item;
@@ -76,7 +76,7 @@ class modGraphNI extends baseClass {
 
 	function getApp($appID) {
 		if (!$this->Token) {
-			throw new siteException('No token defined');
+			throw new siteException('No token defined<br>modGraphNI->getApp');
 		}
 
 		$apps = json_decode($this->sendGetRequest($this->baseURL . 'applications/' . $appID));
@@ -90,7 +90,7 @@ class modGraphNI extends baseClass {
 
 	function getIntune() {
 		if (!$this->Token) {
-			throw new siteException('No token defined');
+			throw new siteException('No token defined<br>modGraphNI->getIntune');
 		}
 
 
@@ -149,7 +149,7 @@ class modGraphNI extends baseClass {
 
     function sendMail($mailbox, $messageArgs ) {
         if (!$this->Token) {
-            throw new siteException('No token defined');
+            throw new siteException('No token defined<br>modGraphNI->sendMail');
         }
 
         /*

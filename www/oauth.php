@@ -29,7 +29,7 @@ if ($sessionData) {
 	$response = $oAuth->postRequest('token', $oauthRequest);
 
 	// Decode response from Azure AD. Extract JWT data from supplied access_token and id_token and update database.
-	if (!$response) { 
+	if (!$response) {
 		echo $oAuth->errorMessage('Unknown error acquiring token');
 		exit;
 	}
@@ -42,6 +42,7 @@ if ($sessionData) {
 	$idToken = base64_decode(explode('.', $reply->id_token)[1]);
 	$modDB->Update('tblAuthSessions', array('txtToken' => $reply->access_token, 'txtRefreshToken' => $reply->refresh_token, 'txtIDToken' => $idToken, 'txtRedir' => '', 'dtExpires' => date('Y-m-d H:i:s', strtotime('+' . $reply->expires_in . ' seconds'))), array('intAuthID' => $sessionData['intAuthID']));
 	// Redirect user back to where they came from.
+
 	header('Location: ' . $sessionData['txtRedir']);
 } else {
 	header('Location: /');
